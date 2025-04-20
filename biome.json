@@ -1,0 +1,98 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "files": {
+    "include": ["./**/*.ts", "./**/*.tsx", "./**/*.json"],
+    "ignore": ["node_modules/", "dist/"]
+  },
+  "formatter": {
+    "enabled": true,
+    "attributePosition": "multiline",
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 90
+  },
+  "organizeImports": {
+    "enabled": true
+  },
+  "vcs": {
+    "clientKind": "git",
+    "defaultBranch": "main",
+    "enabled": true
+  },
+  "json": {
+    "formatter": {
+      "enabled": true
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "enabled": true,
+      "trailingCommas": "all",
+      "arrowParentheses": "always",
+      "attributePosition": "multiline",
+      "bracketSameLine": true,
+      "bracketSpacing": true,
+      "jsxQuoteStyle": "single",
+      "quoteStyle": "single",
+      "semicolons": "always"
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "all": true
+      },
+      "complexity": {
+        "all": true,
+        "useOptionalChain": "off"
+      },
+      "correctness": {
+        "all": true,
+        "noUnusedImports": "warn",
+        "noUnusedVariables": "warn",
+        "noUndeclaredDependencies": "off",
+        "useImportExtensions": "off"
+      },
+      "nursery": {
+        "all": true,
+        "useSortedClasses": "warn",
+        "useConsistentMemberAccessibility": "off",
+        "noNestedTernary": "off",
+        "noSecrets": "off",
+        "useExplicitType": "off",
+        "useComponentExportOnlyModules": "off",
+        "useImportRestrictions": "off"
+      },
+      "performance": {
+        "all": true,
+        "noBarrelFile": "off",
+        "noReExportAll": "off"
+      },
+      "security": {
+        "all": true
+      },
+      "style": {
+        "all": true,
+        "noDefaultExport": "off",
+        "useBlockStatements": "off",
+        "noNonNullAssertion": "off",
+        "useConsistentArrayType": {
+          "level": "warn",
+          "options": {
+            "syntax": "generic"
+          }
+        },
+        "useFilenamingConvention": "off",
+        "useNamingConvention": "off",
+        "useShorthandArrayType": "off"
+      },
+      "suspicious": {
+        "all": true,
+        "noConsole": "off"
+      }
+    }
+  }
+}
