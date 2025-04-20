@@ -15,7 +15,9 @@
     "format": "biome lint --write . && biome format --write . && biome check --write ."
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@biomejs/biome": "1.9.4",
+    "@types/bun": "latest",
+    "tsup": "8.4.0"
   },
   "peerDependencies": {
     "typescript": "^5"
