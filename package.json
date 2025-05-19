@@ -17,7 +17,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/bun": "latest",
-    "tsup": "8.4.0"
+    "tsup": "8.5.0"
   },
   "peerDependencies": {
     "typescript": "^5"
