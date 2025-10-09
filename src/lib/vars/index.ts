@@ -9,14 +9,14 @@ import { InvalidEnvironmentError } from '../error';
  *   'S3_ACCESS_KEY_ID',
  *   'S3_SECRET_ACCESS_KEY',
  *   optional('PORT'),
- * ] as const);
+ * ]);
  * ```
  *
  * @param keys List of environment variable keys to parse.
  *
  * @returns Typed object containing the parsed environment variables.
  */
-export const vars = <T extends ReadonlyArray<string>>(
+export const vars = <const T extends ReadonlyArray<string>>(
   keys: T,
 ): {
   [K in T[number] as K extends `?${infer Name}?` ? Name : K]: K extends `?${string}?`
