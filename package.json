@@ -1,6 +1,6 @@
 {
   "name": "@juriadams/env",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": false,
   "description": "A simple and type-safe way to validate environment variables.",
   "main": "dist/index.js",
@@ -14,6 +14,11 @@
     "lint": "biome lint . && biome check .",
     "format": "biome lint --write . && biome format --write . && biome check --write ."
   },
+  "files": [
+    "package.json",
+    "readme.md",
+    "dist"
+  ],
   "devDependencies": {
     "@biomejs/biome": "2.2.5",
     "@types/bun": "latest",
