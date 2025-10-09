@@ -5,7 +5,7 @@
  * ```ts
  * const env = parse([
  *   optional('PORT'),
- * ] as const);
+ * ]);
  * ```
  *
  * @param name Name of the environment variable to mark as optional.
