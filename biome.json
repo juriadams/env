@@ -1,16 +1,7 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.2.5/schema.json",
   "files": {
-    "includes": [
-      "**/*.ts",
-      "**/*.tsx",
-      "**/*.json",
-      "!**/node_modules",
-      "!**/dist",
-      "!**/.turbo",
-      "!**/.react-router",
-      "!**/.turbo"
-    ]
+    "includes": ["**/*.ts", "**/*.tsx", "**/*.json", "!**/node_modules", "!**/dist"]
   },
   "formatter": {
     "enabled": true,
