@@ -1,8 +1,12 @@
 # `@juriadams/env`
 
-A simple and type-safe way to read and validate environment variables.
+[![Validate](https://github.com/juriadams/env/actions/workflows/validate.yml/badge.svg)](https://github.com/juriadams/env/actions/workflows/validate.yml)
+[![npm version](https://img.shields.io/npm/v/@juriadams/env)](https://www.npmjs.com/package/@juriadams/env)
+[![bundle size](https://img.shields.io/bundlejs/size/@juriadams/env)](https://bundlejs.com/?q=@juriadams/env)
 
-Reads from `import.meta.env` when available (Workers, Bun, Vite, …), otherwise falls back to `process.env` (Node, NestJS, …).
+A tiny, native, type-safe library for reading and validating environment variables, optimized for Bun, Workers, and Node.
+
+Reads from `import.meta.env` when available (Workers, Bun, Deno, Vite, …) and falls back to `process.env` (Node, legacy runtimes, …). An optional custom environment object can also be passed.
 
 ## Installation
 
@@ -63,13 +67,13 @@ When `env` is omitted (or `null`/`undefined`), `vars` resolves the environment a
 ### Develop
 
 ```bash
-bun run dev
+bun dev
 ```
 
 ### Test
 
 ```bash
-bun run test
+bun test
 ```
 
 ### Build
@@ -81,12 +85,12 @@ bun run build
 ### Typecheck
 
 ```bash
-bun run typecheck
+bun typecheck
 ```
 
 ### Lint / Format
 
 ```bash
-bun run lint
-bun run format
+bun lint
+bun format
 ```
