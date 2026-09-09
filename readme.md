@@ -1,6 +1,8 @@
 # `@juriadams/env`
 
-A simple and type-safe way to validate environment variables.
+A simple and type-safe way to read and validate environment variables.
+
+Reads from `import.meta.env` when available (Workers, Bun, Vite, …), otherwise falls back to `process.env` (Node, NestJS, …).
 
 ## Installation
 
@@ -13,26 +15,25 @@ bun add @juriadams/env
 ```ts
 import { vars, optional } from '@juriadams/env';
 
-const env = vars([
-  'OPENAI_API_KEY',
-  optional('PORT'),
-] as const);
+const env = vars(['DB_URL', optional('PORT')]);
 
-// env is inferred as: { OPENAI_API_KEY: string; PORT: string | null }
+// `env` is inferred as: { DB_URL: string; PORT: string | null }
 ```
 
-If one or more required environment variables are missing, an `InvalidEnvironmentError` is thrown.
+`optional('PORT')` marks a key as optional by appending `?` (`'PORT?'`). Missing optional values resolve to `null`.
 
-You can catch and handle it using `instanceof`:
+If one or more required environment variables are missing, a `MissingEnvironmentVariablesError` is thrown:
 
 ```ts
-import { vars, InvalidEnvironmentError } from '@juriadams/env';
+import { vars, MissingEnvironmentVariablesError } from '@juriadams/env';
 
 try {
-  const env = vars(['OPENAI_API_KEY'] as const);
+  const env = vars(['API_URL']);
 } catch (err) {
-  if (err instanceof InvalidEnvironmentError)
-    console.debug({ missing: err.missing });
+  if (err instanceof MissingEnvironmentVariablesError)
+    console.debug('Missing:': { missing: err.vars });
+
+  console.error(err);
 
   throw err;
 }
@@ -46,20 +47,27 @@ try {
 bun run dev
 ```
 
+### Test
+
+```bash
+bun run test
+```
+
 ### Build
 
 ```bash
 bun run build
 ```
 
-### Types
+### Typecheck
 
 ```bash
 bun run typecheck
 ```
 
-### Test
+### Lint / Format
 
 ```bash
-bun run test
+bun run lint
+bun run format
 ```
