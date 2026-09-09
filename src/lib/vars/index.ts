@@ -1,32 +1,20 @@
-import { InvalidEnvironmentError, MissingEnvironmentVariablesError } from "@/lib/errors";
-import { IS_OPTIONAL } from "@/lib/optional";
+import { MissingEnvironmentVariablesError } from "@/lib/errors";
+import {
+  resolve,
+  type Env,
+  type Variable,
+  type VariableDescriptor,
+} from "@/lib/env";
 
-type Env = Record<string, string | undefined>;
+export type ResolveKey<K> =
+  K extends VariableDescriptor<infer N, infer _> ? N : K & string;
 
-export type VarsOptions = {
-  /**
-   * Custom environment object to read from.
-   *
-   * When omitted (or `null`/`undefined`), falls back to `import.meta.env`
-   * or `process.env`.
-   */
-  env?: Env | null;
-};
-
-/**
- * Resolve the active process environment.
- *
- * Prefers `import.meta.env` (Workers, Bun, Vite, ...) and falls back to
- * `process.env` (Node, legacy runtimes, ...).
- */
-const resolveEnv = (): Env => {
-  if ("env" in import.meta) return (import.meta as ImportMeta & { env: Env }).env;
-  if (typeof process !== "undefined" && process.env) return process.env;
-
-  throw new InvalidEnvironmentError(
-    "Unable to resolve process environment, both `import.meta.env` and `process.env` are inaccessible",
-  );
-};
+export type ResolveValue<K> =
+  K extends VariableDescriptor<infer _, infer D>
+    ? [D] extends [string]
+      ? string
+      : string | null
+    : string;
 
 /**
  * Reads and ensures the presence of the given environment variables.
@@ -34,16 +22,20 @@ const resolveEnv = (): Env => {
  * @example
  * ```ts
  * const env = vars([
- *   'S3_ACCESS_KEY_ID',
- *   'S3_SECRET_ACCESS_KEY',
- *   optional('PORT'),
+ *   'DB_URL',
+ *   optional('PORT', '3000'),
+ *   optional('HOST'),
  * ]);
  * ```
  *
  * @example
  * ```ts
- * const env = vars(['PORT'], {
- *   env: { PORT: '3000' },
+ * const env = vars([
+ *   'DB_URL',
+ *   optional('PORT', '3000'),
+ *   optional('HOST'),
+ * ], {
+ *   env: process.env,
  * });
  * ```
  *
@@ -52,37 +44,46 @@ const resolveEnv = (): Env => {
  *   instead of the process environment.
  *
  * @returns Typed object containing the parsed environment variables.
+ *
+ * @throws `InvalidEnvironmentError` if the environment cannot be resolved.
+ * @throws `MissingEnvironmentVariablesError` if any of the required variables
+ *   are missing.
  */
-export const vars = <const T extends ReadonlyArray<string>>(
+export const vars = <const T extends ReadonlyArray<Variable>>(
   keys: T,
-  opts?: VarsOptions,
-): {
-  [K in T[number] as K extends `${infer Name}?` ? Name : K]: K extends `${string}?`
-    ? string | null
-    : string;
-} => {
-  const env = opts?.env ?? resolveEnv();
+  opts?: {
+    /**
+     * Custom environment object to read from.
+     *
+     * When omitted (or `null`/`undefined`), falls back to `import.meta.env`
+     * or `process.env`.
+     */
+    env?: Env | null;
+  },
+): { [K in T[number] as ResolveKey<K>]: ResolveValue<K> } => {
+  const env = opts?.env ?? resolve();
 
   const res: Record<string, string | null> = {};
   const missing = new Set<string>();
 
   for (const raw of keys) {
-    const match = IS_OPTIONAL.exec(raw);
+    if (typeof raw === "string") {
+      const value = env[raw];
 
-    const key = match?.[1] ?? raw;
-    const value = env[key];
+      if (!value) missing.add(raw);
 
-    if (!(value || match)) missing.add(key);
+      res[raw] = value ?? null;
+      continue;
+    }
 
-    res[key] = value ?? null;
+    const value = env[raw.key];
+    res[raw.key] = value ?? raw.default;
   }
 
-  if (missing.size > 0) throw new MissingEnvironmentVariablesError(Array.from(missing));
+  if (missing.size > 0)
+    throw new MissingEnvironmentVariablesError(Array.from(missing));
 
-  // @ts-expect-error Strictly typed.
   return res as unknown as {
-    [K in T[number] as K extends `${infer Name}?` ? Name : K]: K extends `${string}?`
-      ? string | null
-      : string;
+    [K in T[number] as ResolveKey<K>]: ResolveValue<K>;
   };
 };

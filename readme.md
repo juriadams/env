@@ -4,9 +4,7 @@
 [![npm version](https://img.shields.io/npm/v/@juriadams/env)](https://www.npmjs.com/package/@juriadams/env)
 [![bundle size](https://img.shields.io/bundlejs/size/@juriadams/env)](https://bundlejs.com/?q=@juriadams/env)
 
-A tiny, native, type-safe library for reading and validating environment variables, optimized for Bun, Workers, and Node.
-
-Reads from `import.meta.env` when available (Workers, Bun, Deno, Vite, …) and falls back to `process.env` (Node, legacy runtimes, …). An optional custom environment object can also be passed.
+A tiny, native, type-safe library for reading and validating environment variables, optimized for Workers, Bun, and Node.
 
 ## Installation
 
@@ -14,81 +12,68 @@ Reads from `import.meta.env` when available (Workers, Bun, Deno, Vite, …) and 
 bun add @juriadams/env
 ```
 
-### Usage
-
-#### Basic Usage
+## Usage
 
 ```ts
 import { vars, optional } from "@juriadams/env";
 
-const env = vars(["DB_URL", optional("PORT")]);
+const env = vars([
+  "DB_URL",
+  "OPENAI_API_KEY",
+  optional("SENTRY_DSN"),
+  optional("PORT", "3000"),
+]);
 
-// `env` is inferred as: { DB_URL: string; PORT: string | null }
+type Env = typeof env;
+// {
+//   DB_URL: string;
+//   OPENAI_API_KEY: string;
+//   SENTRY_DSN: string | null;
+//   PORT: string | "3000";
+// }
 ```
 
-`optional("PORT")` marks a key as optional by appending `?` (`"PORT?"`). Missing optional values resolve to `null`.
+#### Optional Variables
 
-If one or more required environment variables are missing, a `MissingEnvironmentVariablesError` is thrown:
+`optional("PORT")` marks a key as optional. A default value can be provided via `optional("PORT", "3000")`, the type of which is strictly inferred.
 
-```ts
-import { vars, MissingEnvironmentVariablesError } from "@juriadams/env";
-
-try {
-  const env = vars(["API_URL"]);
-} catch (err) {
-  if (err instanceof MissingEnvironmentVariablesError) console.debug({ missing: err.vars });
-
-  throw err;
-}
-```
+> [!IMPORTANT]  
+> If one or more expected environment variables are missing, a `MissingEnvironmentVariablesError` is thrown.
 
 #### Custom Environment
 
-Pass `opts.env` to read from a custom object instead of the process environment. Useful for tests, overrides, or non-standard runtimes:
+By default, `vars` reads from `import.meta.env` and `process.env` (in order). A custom environment to read from can be provided via `vars([ ... ], { env: process.env })`.
 
-```ts
-import { vars, optional } from "@juriadams/env";
-
-const CUSTOM_ENV = {
-  DB_URL: "postgres://localhost/app".
-};
-
-const env = vars(["DB_URL", optional("PORT")], {
-  env: CUSTOM_ENV,
-});
-
-// { DB_URL: string; PORT: null }
-```
-
-When `env` is omitted (or `null`/`undefined`), `vars` resolves the environment as usual (`import.meta.env` and `process.env`).
+> [!IMPORTANT]  
+> If no environment can be resolved, an `InvalidEnvironmentError` is thrown.
 
 ## Lifecycle
 
-### Develop
+#### Develop
 
 ```bash
 bun dev
 ```
 
-### Test
+#### Test
 
 ```bash
 bun test
 ```
 
-### Build
+#### Build
 
 ```bash
 bun run build
 ```
 
-### Typecheck
+#### Typecheck
 
 ```bash
 bun typecheck
 ```
 
-### Lint / Format
+#### Lint / Format
 
 ```bash
 bun lint

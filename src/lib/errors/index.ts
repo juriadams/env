@@ -12,7 +12,9 @@ export class MissingEnvironmentVariablesError extends Error {
   public readonly vars: Array<string>;
 
   constructor(vars: Array<string>) {
-    super(`Missing environment variables: ${vars.map((v) => `\`${v}\``).join(", ")}`);
+    super(
+      `Missing environment variables: ${vars.map((v) => `\`${v}\``).join(", ")}`,
+    );
 
     this.vars = vars;
   }

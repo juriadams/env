@@ -19,13 +19,18 @@ describe("vars", () => {
   });
 
   test("required missing", () => {
-    expect(() => vars([EXAMPLE_ENV_VAR])).toThrow(MissingEnvironmentVariablesError);
+    expect(() => vars([EXAMPLE_ENV_VAR])).toThrow(
+      MissingEnvironmentVariablesError,
+    );
 
     try {
       vars([EXAMPLE_ENV_VAR]);
     } catch (err) {
       expect(err).toBeInstanceOf(MissingEnvironmentVariablesError);
-      expect((err as MissingEnvironmentVariablesError).vars).toContain(EXAMPLE_ENV_VAR);
+
+      expect((err as MissingEnvironmentVariablesError).vars).toContain(
+        EXAMPLE_ENV_VAR,
+      );
     }
   });
 
@@ -34,17 +39,40 @@ describe("vars", () => {
 
     process.env[EXAMPLE_ENV_VAR] = value;
 
-    expect(vars([optional(EXAMPLE_ENV_VAR)])).toEqual({ [EXAMPLE_ENV_VAR]: value });
+    expect(vars([optional(EXAMPLE_ENV_VAR)])).toEqual({
+      [EXAMPLE_ENV_VAR]: value,
+    });
+  });
+
+  test("optional present (ignores default)", () => {
+    expect(
+      vars([optional(EXAMPLE_ENV_VAR, "3000")], {
+        env: { [EXAMPLE_ENV_VAR]: "8080" },
+      }),
+    ).toEqual({ [EXAMPLE_ENV_VAR]: "8080" });
   });
 
   test("optional missing", () => {
-    expect(vars([optional(EXAMPLE_ENV_VAR)])).toEqual({ [EXAMPLE_ENV_VAR]: null });
+    expect(vars([optional(EXAMPLE_ENV_VAR)])).toEqual({
+      [EXAMPLE_ENV_VAR]: null,
+    });
+  });
+
+  test("optional missing (with default)", () => {
+    expect(vars([optional(EXAMPLE_ENV_VAR, "3000")], { env: {} })).toEqual({
+      [EXAMPLE_ENV_VAR]: "3000",
+    });
+    expect(vars([optional(EXAMPLE_ENV_VAR, null)], { env: {} })).toEqual({
+      [EXAMPLE_ENV_VAR]: null,
+    });
   });
 
   test("custom env", () => {
     const value = crypto.randomUUID();
 
-    expect(vars([EXAMPLE_ENV_VAR], { env: { [EXAMPLE_ENV_VAR]: value } })).toEqual({
+    expect(
+      vars([EXAMPLE_ENV_VAR], { env: { [EXAMPLE_ENV_VAR]: value } }),
+    ).toEqual({
       [EXAMPLE_ENV_VAR]: value,
     });
 
@@ -52,10 +80,14 @@ describe("vars", () => {
       [EXAMPLE_ENV_VAR]: null,
     });
 
-    expect(() => vars([EXAMPLE_ENV_VAR], { env: {} })).toThrow(MissingEnvironmentVariablesError);
+    expect(() => vars([EXAMPLE_ENV_VAR], { env: {} })).toThrow(
+      MissingEnvironmentVariablesError,
+    );
 
     // Custom env must not fall through to process.env for missing keys.
     process.env[EXAMPLE_ENV_VAR] = "from-process";
-    expect(() => vars([EXAMPLE_ENV_VAR], { env: {} })).toThrow(MissingEnvironmentVariablesError);
+    expect(() => vars([EXAMPLE_ENV_VAR], { env: {} })).toThrow(
+      MissingEnvironmentVariablesError,
+    );
   });
 });
