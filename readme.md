@@ -13,9 +13,9 @@ bun add @juriadams/env
 ### Usage
 
 ```ts
-import { vars, optional } from '@juriadams/env';
+import { vars, optional } from "@juriadams/env";
 
-const env = vars(['DB_URL', optional('PORT')]);
+const env = vars(["DB_URL", optional("PORT")]);
 
 // `env` is inferred as: { DB_URL: string; PORT: string | null }
 ```
