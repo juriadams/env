@@ -33,9 +33,9 @@
     "oxlint-tsgolint": "7.0.2001",
     "publint": "0.3.24",
     "tsdown": "0.23.0",
-    "typescript": "^5"
+    "typescript": "^7"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^7"
   }
 }
