@@ -17,8 +17,14 @@ import type { VariableDescriptor } from "@/lib/env";
  * @returns `VariableDescriptor` to be consumed by `vars`.
  */
 export function optional<T extends string>(key: T): VariableDescriptor<T, null>;
-export function optional<T extends string>(key: T, def: undefined): VariableDescriptor<T, null>;
-export function optional<T extends string>(key: T, def: null): VariableDescriptor<T, null>;
+export function optional<T extends string>(
+  key: T,
+  def: undefined,
+): VariableDescriptor<T, null>;
+export function optional<T extends string>(
+  key: T,
+  def: null,
+): VariableDescriptor<T, null>;
 export function optional<T extends string, D extends string>(
   key: T,
   def: D,

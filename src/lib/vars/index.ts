@@ -1,7 +1,13 @@
 import { MissingEnvironmentVariablesError } from "@/lib/errors";
-import { resolve, type Env, type Variable, type VariableDescriptor } from "@/lib/env";
+import {
+  resolve,
+  type Env,
+  type Variable,
+  type VariableDescriptor,
+} from "@/lib/env";
 
-export type ResolveKey<K> = K extends VariableDescriptor<infer N, infer _> ? N : K & string;
+export type ResolveKey<K> =
+  K extends VariableDescriptor<infer N, infer _> ? N : K & string;
 
 export type ResolveValue<K> =
   K extends VariableDescriptor<infer _, infer D>
@@ -74,7 +80,10 @@ export const vars = <const T extends ReadonlyArray<Variable>>(
     res[raw.key] = value ?? raw.default;
   }
 
-  if (missing.size > 0) throw new MissingEnvironmentVariablesError(Array.from(missing));
+  if (missing.size > 0)
+    throw new MissingEnvironmentVariablesError(Array.from(missing));
 
-  return res as unknown as { [K in T[number] as ResolveKey<K>]: ResolveValue<K> };
+  return res as unknown as {
+    [K in T[number] as ResolveKey<K>]: ResolveValue<K>;
+  };
 };

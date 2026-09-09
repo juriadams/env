@@ -10,7 +10,10 @@ export type Env = Record<string, string | undefined>;
  *
  * Contains the `key` and an optional `default` value.
  */
-export type VariableDescriptor<T extends string = string, D extends string | null = null> = {
+export type VariableDescriptor<
+  T extends string = string,
+  D extends string | null = null,
+> = {
   readonly key: T;
   readonly default: D;
 };
@@ -28,7 +31,8 @@ export type Variable = string | VariableDescriptor<string, string | null>;
  * @throws `InvalidEnvironmentError` if the environment cannot be resolved.
  */
 export const resolve = (): Env => {
-  if ("env" in import.meta) return (import.meta as ImportMeta & { env: Env }).env;
+  if ("env" in import.meta)
+    return (import.meta as ImportMeta & { env: Env }).env;
   if (typeof process !== "undefined" && process.env) return process.env;
 
   throw new InvalidEnvironmentError(
