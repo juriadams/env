@@ -40,4 +40,22 @@ describe("vars", () => {
   test("optional missing", () => {
     expect(vars([optional(EXAMPLE_ENV_VAR)])).toEqual({ [EXAMPLE_ENV_VAR]: null });
   });
+
+  test("custom env", () => {
+    const value = crypto.randomUUID();
+
+    expect(vars([EXAMPLE_ENV_VAR], { env: { [EXAMPLE_ENV_VAR]: value } })).toEqual({
+      [EXAMPLE_ENV_VAR]: value,
+    });
+
+    expect(vars([optional(EXAMPLE_ENV_VAR)], { env: {} })).toEqual({
+      [EXAMPLE_ENV_VAR]: null,
+    });
+
+    expect(() => vars([EXAMPLE_ENV_VAR], { env: {} })).toThrow(MissingEnvironmentVariablesError);
+
+    // Custom env must not fall through to process.env for missing keys.
+    process.env[EXAMPLE_ENV_VAR] = "from-process";
+    expect(() => vars([EXAMPLE_ENV_VAR], { env: {} })).toThrow(MissingEnvironmentVariablesError);
+  });
 });

@@ -3,6 +3,16 @@ import { IS_OPTIONAL } from "@/lib/optional";
 
 type Env = Record<string, string | undefined>;
 
+export type VarsOptions = {
+  /**
+   * Custom environment object to read from.
+   *
+   * When omitted (or `null`/`undefined`), falls back to `import.meta.env`
+   * or `process.env`.
+   */
+  env?: Env | null;
+};
+
 /**
  * Resolve the active process environment.
  *
@@ -23,25 +33,35 @@ const resolveEnv = (): Env => {
  *
  * @example
  * ```ts
- * const env = parse([
+ * const env = vars([
  *   'S3_ACCESS_KEY_ID',
  *   'S3_SECRET_ACCESS_KEY',
  *   optional('PORT'),
  * ]);
  * ```
  *
+ * @example
+ * ```ts
+ * const env = vars(['PORT'], {
+ *   env: { PORT: '3000' },
+ * });
+ * ```
+ *
  * @param keys List of environment variable keys to parse.
+ * @param opts Optional configuration. Pass `env` to read from a custom object
+ *   instead of the process environment.
  *
  * @returns Typed object containing the parsed environment variables.
  */
 export const vars = <const T extends ReadonlyArray<string>>(
   keys: T,
+  opts?: VarsOptions,
 ): {
   [K in T[number] as K extends `${infer Name}?` ? Name : K]: K extends `${string}?`
     ? string | null
     : string;
 } => {
-  const env = resolveEnv();
+  const env = opts?.env ?? resolveEnv();
 
   const res: Record<string, string | null> = {};
   const missing = new Set<string>();
