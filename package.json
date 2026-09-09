@@ -1,6 +1,6 @@
 {
   "name": "@juriadams/env",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": false,
   "description": "A simple and type-safe way to validate environment variables.",
   "files": [

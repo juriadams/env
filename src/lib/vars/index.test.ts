@@ -37,8 +37,23 @@ describe("vars", () => {
     expect(vars([optional(EXAMPLE_ENV_VAR)])).toEqual({ [EXAMPLE_ENV_VAR]: value });
   });
 
+  test("optional present (ignores default)", () => {
+    expect(
+      vars([optional(EXAMPLE_ENV_VAR, "3000")], { env: { [EXAMPLE_ENV_VAR]: "8080" } }),
+    ).toEqual({ [EXAMPLE_ENV_VAR]: "8080" });
+  });
+
   test("optional missing", () => {
     expect(vars([optional(EXAMPLE_ENV_VAR)])).toEqual({ [EXAMPLE_ENV_VAR]: null });
+  });
+
+  test("optional missing (with default)", () => {
+    expect(vars([optional(EXAMPLE_ENV_VAR, "3000")], { env: {} })).toEqual({
+      [EXAMPLE_ENV_VAR]: "3000",
+    });
+    expect(vars([optional(EXAMPLE_ENV_VAR, null)], { env: {} })).toEqual({
+      [EXAMPLE_ENV_VAR]: null,
+    });
   });
 
   test("custom env", () => {
