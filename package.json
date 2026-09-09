@@ -1,6 +1,6 @@
 {
   "name": "@juriadams/env",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": false,
   "description": "A simple and type-safe way to validate environment variables.",
   "files": [
@@ -33,9 +33,6 @@
     "oxlint-tsgolint": "7.0.2001",
     "publint": "0.3.24",
     "tsdown": "0.23.0",
-    "typescript": "^7"
-  },
-  "peerDependencies": {
     "typescript": "^7"
   }
 }
